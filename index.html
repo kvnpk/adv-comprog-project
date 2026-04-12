@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCourseVille - Registrar Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; padding: 40px; }
+        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; }
+        .container { display: flex; gap: 20px; max-width: 900px; margin: 0 auto; }
+        .panel { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { background-color: #1a73e8; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #1557b0; }
+    </style>
+</head>
+<body>
+
+    <h1>MyCourseVille</h1>
+
+    <div class="container">
+        <div class="panel">
+            <h2>Student Registration</h2>
+            <div class="form-group"><label>Full Name:</label><input type="text" id="name"></div>
+            <div class="form-group"><label>Student ID:</label><input type="text" id="id"></div>
+            <div class="form-group"><label>Major:</label>
+                <select id="major">
+                    <option value="Automotive Design and Manufacturing Engineering">Automotive Design and Manufacturing Engineering</option>
+                    <option value="Aerospace Engineering">Aerospace Engineering</option>
+                    <option value="Information and Communication Engineering">Information and Communication Engineering</option>
+                    <option value="Nano Engineering">Nano Engineering</option>
+                    <option value="Robotics and Artificial Intelligence Engineering">Robotics and Artificial Intelligence Engineering</option>
+                    <option value="Semiconductor Engineering">Semiconductor Engineering</option>
+                </select>
+            </div>
+            <div class="form-group"><input type="checkbox" id="scholarship"> <label style="display:inline;">Has Scholarship?</label></div>
+            <button onclick="createStudent()">Create User & Save to Excel</button>
+        </div>
+
+        <div class="panel">
+            <h2>Course Enrollment</h2>
+            <div class="form-group"><label>Select Student:</label>
+                <select id="studentDropdown"><option value="">-- Loading... --</option></select>
+            </div>
+            <div class="form-group"><label>Select Course:</label>
+                <select id="courseDropdown"><option value="Calculus">Calculus</option></select>
+            </div>
+            <button onclick="enrollStudent()">Enroll in Course</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Automatically fetch data from Java server when page loads
+        window.onload = function() {
+            fetch('/api/getStudents')
+                .then(response => response.json())
+                .then(students => {
+                    const dropdown = document.getElementById('studentDropdown');
+                    dropdown.innerHTML = '<option value="">-- Select a student --</option>'; // Clear loading text
+                    
+                    students.forEach(s => {
+                        const option = document.createElement('option');
+                        option.text = `${s.name} (${s.id})`;
+                        dropdown.add(option);
+                    });
+                });
+        };
+
+        // 2. Send data to Java server to create a student
+        function createStudent() {
+            const name = document.getElementById('name').value;
+            const id = document.getElementById('id').value;
+            const major = document.getElementById('major').value;
+            const scholarship = document.getElementById('scholarship').checked;
+
+            if (!name || !id) { alert("Please enter Name and ID!"); return; }
+
+            // Format data like a standard HTML form
+            const formData = new URLSearchParams();
+            formData.append("name", name);
+            formData.append("id", id);
+            formData.append("major", major);
+            formData.append("scholarship", scholarship);
+
+            // Send POST request to Java server
+            fetch('/api/createStudent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            }).then(response => response.text())
+              .then(text => {
+                  alert(text); // Shows "Student saved successfully!"
+                  window.location.reload(); // Refresh page to update the dropdown
+              });
+        }
+
+        function enrollStudent() {
+            const student = document.getElementById('studentDropdown');
+            if (student.value === "") { alert("Please select a student!"); return; }
+            alert("Ready to build enrollment logic next!");
+        }
+    </script>
+</body>
+</html>
