@@ -6,6 +6,7 @@ public class DataManager {
 
     private static final String COURSE_FILE = "course_data.ser";
     private static final String STUDENT_FILE = "students_data.ser";
+    private static final String PROF_FILE = "professors_data.ser";
 
 
     public static void saveCourses(List<Course> courses) {
@@ -54,5 +55,20 @@ public class DataManager {
             System.err.println("Error loading students: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    public static void saveProfessors(List<Professor> professors) {
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PROF_FILE))) {
+        oos.writeObject(professors);
+    } catch (IOException e) { e.printStackTrace(); }
+}
+
+    @SuppressWarnings("unchecked")
+    public static List<Professor> loadProfessors() {
+        File file = new File(PROF_FILE);
+        if (!file.exists()) return new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(PROF_FILE))) {
+            return (List<Professor>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) { return new ArrayList<>(); }
     }
 }

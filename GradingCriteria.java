@@ -1,4 +1,6 @@
-public class GradingCriteria {
+import java.io.Serializable;
+
+public class GradingCriteria implements Serializable {
     private double minA;
     private double minB;
     private double minC;

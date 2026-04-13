@@ -24,6 +24,7 @@ public class Course implements Subject, Serializable {
     public String getCourseName() { return courseName; }
     public String getCourseID() { return courseID; }
     public List<Student> getEnrolledStudents() { return enrolledStudents; }
+    public Map<Student, String> getgrades() {return grades;};
 
     public void addStudent(Student student) {
         if (!enrolledStudents.contains(student)) {

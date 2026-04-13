@@ -13,4 +13,10 @@ public class ProfessorController {
         DataManager.saveCourses(masterCourseList);
     }
 
+    public void createCourse(String name, String id, GradingStrategy strategy) {
+        Course newCourse = new Course(name, id, strategy);
+        masterCourseList.add(newCourse);
+        DataManager.saveCourses(masterCourseList);
+    }
+
 }
