@@ -12,7 +12,7 @@ public class RegistrarUI {
 
     public RegistrarUI() {
         // 1. Load existing data right when the app opens
-        allStudents = ExcelDataManager.loadStudentsFromExcel();
+        allStudents = DataManager.loadStudents();
 
         // 2. Setup the Main Frame
         JFrame frame = new JFrame("MyCourseVille - Registrar Portal");
@@ -29,7 +29,6 @@ public class RegistrarUI {
         JTextField idField = new JTextField(15);
         String[] majors = {"Automotive Design and Manufacturing Engineering", "Aerospace Engineering", "Information and Communication Engineering", "Nano Engineering", "Robotics and Artificial Intelligence Engineering", "Semiconductor Engineering"};
         JComboBox<String> majorCombo = new JComboBox<>(majors);
-        JCheckBox scholarshipBox = new JCheckBox("Has Scholarship?");
         JButton createUserBtn = new JButton("Create User");
 
         registrationPanel.add(new JLabel("Full Name:"));
@@ -40,8 +39,6 @@ public class RegistrarUI {
         registrationPanel.add(Box.createVerticalStrut(10));
         registrationPanel.add(new JLabel("Major:"));
         registrationPanel.add(majorCombo);
-        registrationPanel.add(Box.createVerticalStrut(10));
-        registrationPanel.add(scholarshipBox);
         registrationPanel.add(Box.createVerticalStrut(20));
         registrationPanel.add(createUserBtn);
 
@@ -79,7 +76,6 @@ public class RegistrarUI {
                 String name = nameField.getText();
                 String id = idField.getText();
                 String major = (String) majorCombo.getSelectedItem();
-                boolean hasScholarship = scholarshipBox.isSelected();
 
                 if(name.isEmpty() || id.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "Please enter Name and ID.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -89,12 +85,11 @@ public class RegistrarUI {
                 // 1. Build the Object
                 Student newStudent = new Student.StudentBuilder(name, id)
                                                 .setMajor(major)
-                                                .setScholarship(hasScholarship)
                                                 .build();
 
                 // 2. Add to list and Save to Excel
                 allStudents.add(newStudent);
-                ExcelDataManager.saveStudentsToExcel(allStudents);
+                DataManager.saveStudents(allStudents);
 
                 // 3. Update UI Dropdown
                 studentDropdown.addItem(newStudent.getName() + " (" + newStudent.getId() + ")");
@@ -102,7 +97,6 @@ public class RegistrarUI {
                 // 4. Clear form
                 nameField.setText("");
                 idField.setText("");
-                scholarshipBox.setSelected(false);
 
                 JOptionPane.showMessageDialog(frame, "Student Created & Saved to Excel!");
             }

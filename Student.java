@@ -1,22 +1,25 @@
-public class Student extends User {
+import java.io.Serializable;
+
+public class Student extends User implements Observer, Serializable{
     private String major;
-    private boolean hasScholarship;
 
     private Student(StudentBuilder builder) {
         super(builder.name, builder.id);
         this.major = builder.major;
-        this.hasScholarship = builder.hasScholarship;
     }
 
     public String getMajor() { return major; }
-    public boolean hasScholarship() { return hasScholarship; }
+
+    @Override
+    public void update(String message) {
+        System.out.println(message);
+    }
 
     public static class StudentBuilder {
         protected String name;
         protected String id;
 
         private String major = "Undeclared";
-        private boolean hasScholarship = false;
 
         public StudentBuilder(String name, String id) {
             this.name = name;
@@ -25,11 +28,6 @@ public class Student extends User {
 
         public StudentBuilder setMajor(String major) {
             this.major = major;
-            return this;
-        }
-
-        public StudentBuilder setScholarship(boolean hasScholarship) {
-            this.hasScholarship = hasScholarship;
             return this;
         }
 
