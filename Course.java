@@ -3,10 +3,12 @@ import java.util.List;
 
 public class Course {
     private String courseName;
+    private String courseID;
     private List<Student> enrolledStudents;
 
-    public Course(String courseName) {
+    public Course(String courseName,String courseID) {
         this.courseName = courseName;
+        this.courseID = courseID;
         this.enrolledStudents = new ArrayList<>();
     }
 
